@@ -1,6 +1,8 @@
 // 自定义错误地址
 // 当错误发生的时候，我们捕获到发生的错误，然后抛出我们自定义的错误
 
+const { formatResponse } = require('./tool');
+
 class ServiceError extends Error {
   /**
    *
@@ -13,7 +15,9 @@ class ServiceError extends Error {
   }
 
   // 方法
-  toResponseJSON() {}
+  toResponseJSON() {
+    return formatResponse(this.code, this.message, null);
+  }
 }
 
 // 文件上传错误
