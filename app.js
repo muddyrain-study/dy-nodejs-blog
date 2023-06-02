@@ -20,10 +20,6 @@ require('express-async-errors');
 // 引入数据库
 require('./dao/db');
 
-// 引入路由
-var adminRouter = require('./routes/admin');
-var captchaRouter = require('./routes/captcha');
-
 var app = express();
 
 app.use(
@@ -57,8 +53,9 @@ app.use(
 );
 
 // 引入路由
-app.use('/api/admin', adminRouter);
-app.use('/api/captcha', captchaRouter);
+app.use('/api/admin', require('./routes/admin'));
+app.use('/api/captcha', require('./routes/captcha'));
+app.use('/api/banner', require('./routes/banner'));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
