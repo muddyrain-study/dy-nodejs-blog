@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const md5 = require('md5');
-
+const path = require('path');
+const multer = require('multer');
 // 格式化要响应的数据
 // {
 //     "code" : code,
@@ -27,3 +28,33 @@ module.exports.handleDataPattern = function (data) {
   }
   return arr;
 };
+
+//设置上传文件引擎
+const storage = multer.diskStorage({
+  // 文件存储的位置
+  destination: function (req, file, cb) {
+    cb(null, __dirname + '/../public/static/uploads');
+  },
+  // 上传服务器的文件 文件名要做单独处理
+  filename: function (req, file, cb) {
+    // 获取文件名
+    const basename = path.basename(
+      file.originalname,
+      path.extname(file.originalname)
+    );
+    // 获取后缀名
+    const extname = path.extname(file.originalname);
+    // 构建新的名字
+    const newName =
+      basename +
+      new Date().getTime() +
+      Math.floor(Math.random() * 9000 + 1000) +
+      extname;
+    cb(null, newName);
+  },
+});
+
+module.exports.uploading = multer({
+  storage: storage,
+  limits: { fileSize: 1024 * 1024 * 2, files: 1 },
+});
