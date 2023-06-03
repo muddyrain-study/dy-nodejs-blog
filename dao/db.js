@@ -4,8 +4,22 @@ const md5 = require('md5');
 const adminModel = require('./model/adminModel');
 const bannerModel = require('./model/bannerModel');
 const blogTypeModel = require('./model/blogTypeModel');
+const blogModel = require('./model/blogModel');
 
 (async function () {
+  // 定义模型之间的关联关系
+
+  // 博客和博客分类之间的关系
+  blogTypeModel.hasMany(blogModel, {
+    foreignKey: 'categoryId',
+    sourceKey: 'id',
+  });
+  blogModel.belongsTo(blogTypeModel, {
+    foreignKey: 'categoryId',
+    sourceKey: 'id',
+    as: 'category',
+  });
+
   sequelize.sync({
     // 同步表字段
     alter: true,

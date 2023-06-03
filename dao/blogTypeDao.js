@@ -36,3 +36,11 @@ module.exports.deleteBlogTypeDao = async function (id) {
     },
   });
 };
+
+// 根据 id 新增对应博客分类的文章数量
+module.exports.addBlogToType = async function (id) {
+  const data = await blogTypeModel.findByPk(id);
+  data.articleCount++;
+  await data.save();
+  return;
+};
