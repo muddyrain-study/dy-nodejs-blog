@@ -47,7 +47,11 @@ app.use(
       // 需要排除验证的路由
       path: [
         { url: '/api/admin/login', methods: ['POST'] },
-        { url: '/api/captcha', methods: ['GET'] },
+        { url: '/res/captcha', methods: ['GET'] },
+        { url: '/api/banner', methods: ['GET'] },
+        { url: '/api/blogType', methods: ['GET'] },
+        { url: '/api/blog', methods: ['GET'] },
+        { url: /\/api\/blog\/\d/, methods: ['GET'] },
       ],
     })
 );

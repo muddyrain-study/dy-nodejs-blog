@@ -38,3 +38,34 @@ module.exports.findBlogByPageDao = async function (pageInfo) {
     });
   }
 };
+
+// 根据 id 获取其中一篇文章
+module.exports.findBlogByIdDao = async function (id) {
+  return await blogModel.findByPk(id, {
+    include: [
+      {
+        model: blogTypeModel,
+        as: 'category',
+      },
+    ],
+  });
+};
+
+// 修改一篇博文
+module.exports.updateBlogDao = async function (id, newBlogInfo) {
+  await blogModel.update(newBlogInfo, {
+    where: {
+      id,
+    },
+  });
+  return await blogModel.findByPk(id);
+};
+
+// 删除一篇博客
+module.exports.deleteBlogDao = async function (id) {
+  return await blogModel.destroy({
+    where: {
+      id,
+    },
+  });
+};
