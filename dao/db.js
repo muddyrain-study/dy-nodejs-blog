@@ -5,6 +5,7 @@ const adminModel = require('./model/adminModel');
 const bannerModel = require('./model/bannerModel');
 const blogTypeModel = require('./model/blogTypeModel');
 const blogModel = require('./model/blogModel');
+const demoModel = require('./model/demoModel');
 
 (async function () {
   // 定义模型之间的关联关系
