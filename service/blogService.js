@@ -31,81 +31,79 @@ module.exports.addBlogService = async newBlogInfo => {
 
   newBlogInfo.toc = JSON.stringify(newBlogInfo.toc);
 
-  console.log(newBlogInfo, 'newBlogInfo');
+  // 初始化新文章的其他信息
+  newBlogInfo.scanNumber = 0; // 阅读量初始化为 0
+  newBlogInfo.commentNumber = 0; // 评论数初始化为 0
 
-  // // 初始化新文章的其他信息
-  // newBlogInfo.scanNumber = 0; // 阅读量初始化为 0
-  // newBlogInfo.commentNumber = 0; // 评论数初始化为 0
+  // 定义验证规则
+  const blogRule = {
+    title: {
+      presence: {
+        allowEmpty: false,
+      },
+      type: 'string',
+    },
+    description: {
+      presence: {
+        allowEmpty: true,
+      },
+      type: 'string',
+    },
+    toc: {
+      presence: {
+        allowEmpty: true,
+      },
+      type: 'string',
+    },
+    htmlContent: {
+      presence: {
+        allowEmpty: false,
+      },
+      type: 'string',
+    },
+    thumb: {
+      presence: {
+        allowEmpty: true,
+      },
+      type: 'string',
+    },
+    scanNumber: {
+      presence: {
+        allowEmpty: false,
+      },
+      type: 'integer',
+    },
+    commentNumber: {
+      presence: {
+        allowEmpty: false,
+      },
+      type: 'integer',
+    },
+    createDate: {
+      presence: {
+        allowEmpty: false,
+      },
+      type: 'integer',
+    },
+    categoryId: {
+      presence: true,
+      type: 'integer',
+      categoryIdIsExist: true,
+    },
+  };
 
-  // // 定义验证规则
-  // const blogRule = {
-  //   title: {
-  //     presence: {
-  //       allowEmpty: false,
-  //     },
-  //     type: 'string',
-  //   },
-  //   description: {
-  //     presence: {
-  //       allowEmpty: true,
-  //     },
-  //     type: 'string',
-  //   },
-  //   toc: {
-  //     presence: {
-  //       allowEmpty: true,
-  //     },
-  //     type: 'string',
-  //   },
-  //   htmlContent: {
-  //     presence: {
-  //       allowEmpty: false,
-  //     },
-  //     type: 'string',
-  //   },
-  //   thumb: {
-  //     presence: {
-  //       allowEmpty: true,
-  //     },
-  //     type: 'string',
-  //   },
-  //   scanNumber: {
-  //     presence: {
-  //       allowEmpty: false,
-  //     },
-  //     type: 'integer',
-  //   },
-  //   commentNumber: {
-  //     presence: {
-  //       allowEmpty: false,
-  //     },
-  //     type: 'integer',
-  //   },
-  //   createDate: {
-  //     presence: {
-  //       allowEmpty: false,
-  //     },
-  //     type: 'integer',
-  //   },
-  //   categoryId: {
-  //     presence: true,
-  //     type: 'integer',
-  //     categoryIdIsExist: true,
-  //   },
-  // };
-
-  // // 接下来对传递过来的数据进行一个验证
-  // try {
-  //   // 因为扩展的验证规则里面涉及到异步的操作，所以这里要采用异步的验证方式
-  //   await validate.async(newBlogInfo, blogRule);
-  //   const data = await addBlogDao(newBlogInfo); // 进行一个新增
-  //   // 接下来还有一个工作，文章新增了，对应的文章分类也应该新增
-  //   await addBlogToType(newBlogInfo.categoryId);
-  //   return formatResponse(0, '', data);
-  // } catch (e) {
-  //   // 验证未通过
-  //   throw new ValidationError('数据验证失败');
-  // }
+  // 接下来对传递过来的数据进行一个验证
+  try {
+    // 因为扩展的验证规则里面涉及到异步的操作，所以这里要采用异步的验证方式
+    await validate.async(newBlogInfo, blogRule);
+    const data = await addBlogDao(newBlogInfo); // 进行一个新增
+    // 接下来还有一个工作，文章新增了，对应的文章分类也应该新增
+    await addBlogToType(newBlogInfo.categoryId);
+    return formatResponse(0, '', data);
+  } catch (e) {
+    // 验证未通过
+    throw new ValidationError('数据验证失败');
+  }
 };
 
 // 根据分页来查询博客
