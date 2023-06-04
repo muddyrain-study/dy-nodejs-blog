@@ -63,8 +63,7 @@ module.exports.uploading = multer({
 
 // 处理 TOC
 module.exports.handleTOC = function (info) {
-  let result = toc(info.htmlContent).json;
-  console.log(result);
+  let result = toc(info.markdownContent).json;
 
   function transfer(flatArr) {
     const stack = [];
@@ -84,11 +83,20 @@ module.exports.handleTOC = function (info) {
       // 如果该数组为空，得到的是一个 undefined
       const top = stack[stack.length - 1];
       if (!top) {
+        stack.push(item);
+      } else if (item.level > top.level) {
+        // 进入此分支，说明当前的 toc 对象的等级比栈顶（之前的上一个）要大
+        // 说明当前这个 toc 对象应该成为上一个 toc 对象的子元素
+        top.children.push(item);
+        stack.push(item);
+      } else {
+        stack.pop();
+        handleItem(item);
       }
     }
 
     // 最小级别标题
-    const min = 6;
+    let min = 6;
     // 该 for 循环用于寻找当前数组中最小的标题等级
     for (const i of flatArr) {
       if (i.lvl < min) {
@@ -104,6 +112,46 @@ module.exports.handleTOC = function (info) {
       // 如果没有进入上面的 if，说明该 toc 对象不是最低等级，可能是其他 toc 对象 children 数组里面的一员
       handleItem(tocItem);
     }
+
+    return result;
   }
   info.toc = transfer(result);
+  delete info.markdownContent;
+  // 接下来再为各个级别的标题添加上 id
+  for (const i of result) {
+    switch (i.lvl) {
+      case 1: {
+        var newStr = `<h1 id="${i.slug}">`;
+        info.htmlContent = info.htmlContent.replace('<h1>', newStr);
+        break;
+      }
+      case 2: {
+        var newStr = `<h2 id="${i.slug}">`;
+        info.htmlContent = info.htmlContent.replace('<h2>', newStr);
+        break;
+      }
+      case 3: {
+        var newStr = `<h3 id="${i.slug}">`;
+        info.htmlContent = info.htmlContent.replace('<h3>', newStr);
+        break;
+      }
+      case 4: {
+        var newStr = `<h4 id="${i.slug}">`;
+        info.htmlContent = info.htmlContent.replace('<h4>', newStr);
+        break;
+      }
+      case 5: {
+        var newStr = `<h5 id="${i.slug}">`;
+        info.htmlContent = info.htmlContent.replace('<h5>', newStr);
+        break;
+      }
+      case 6: {
+        var newStr = `<h6 id="${i.slug}">`;
+        info.htmlContent = info.htmlContent.replace('<h6>', newStr);
+        break;
+      }
+    }
+  }
+
+  return info;
 };

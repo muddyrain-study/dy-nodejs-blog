@@ -79,6 +79,7 @@ app.use(function (err, req, res, next) {
   } else if (err instanceof ServiceError) {
     res.send(err.toResponseJSON());
   } else {
+    console.log(err);
     res.send(new UnknownError().toResponseJSON());
   }
 });
