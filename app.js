@@ -52,6 +52,8 @@ app.use(
         { url: '/api/blogType', methods: ['GET'] },
         { url: '/api/blog', methods: ['GET'] },
         { url: '/api/project', methods: ['GET'] },
+        { url: '/api/message', methods: ['GET', 'POST'] },
+        { url: '/api/comment', methods: ['GET', 'POST'] },
         { url: /\/api\/blog\/\d/, methods: ['GET'] },
       ],
     })
@@ -65,6 +67,8 @@ app.use('/api/upload', require('./routes/upload'));
 app.use('/api/blogType', require('./routes/blogType'));
 app.use('/api/blog', require('./routes/blog'));
 app.use('/api/project', require('./routes/demo'));
+app.use('/api/message', require('./routes/message'));
+app.use('/api/comment', require('./routes/message'));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

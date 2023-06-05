@@ -6,6 +6,7 @@ const bannerModel = require('./model/bannerModel');
 const blogTypeModel = require('./model/blogTypeModel');
 const blogModel = require('./model/blogModel');
 const demoModel = require('./model/demoModel');
+const messageModel = require('./model/messageModel');
 
 (async function () {
   // 定义模型之间的关联关系
@@ -19,6 +20,17 @@ const demoModel = require('./model/demoModel');
     foreignKey: 'categoryId',
     sourceKey: 'id',
     as: 'category',
+  });
+
+  // 博客和博客评论之间存在关联关系
+  messageModel.belongsTo(blogModel, {
+    foreignKey: 'blogId',
+    sourceKey: 'id',
+    as: 'blog',
+  });
+  blogModel.hasMany(messageModel, {
+    foreignKey: 'blogId',
+    sourceKey: 'id',
   });
 
   sequelize.sync({
